@@ -1,12 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="%sveltekit.assets%/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="%sveltekit.assets%/assets/css/noscript.css" /></noscript>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<title>Agora QUIZ</title>
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+
+	<body class="is-preload" data-sveltekit-preload-data="hover">
+		<div style="display: contents">
+			<!-- %sveltekit.body% -->
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<span class="logo"><img src="images/branding/logo_white_transparent.png" alt="" /></span>
+						<p>Chaque lundi soir à 18:30 au pub Pêle-Mêle à l'Agora</p>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="#intro" class="active">Classement des équipes</a></li>
+							<li><a href="#first">Thèmes à venir</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Introduction -->
+							<section id="intro" class="main">
+								<header class="major">
+									<h2>Janvier 2023</h2>
+								</header>
+
+								<div class="content spotlight">
+									<div class="table-wrapper">
+										<table class="alt">
+											<thead>
+												<tr>
+													<th>Équipe</th>
+													<th>Date</th>
+													<th>Thème</th>
+													<th>Points</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Vegeta</td>
+													<td>2023-01-01</td>
+													<td>Disney</td>
+													<td>3</td>
+												</tr>
+												<tr>
+													<td>Nerdy Nerd Nerds</td>
+													<td>Vis ac commodo adipiscing arcu aliquet.</td>
+													<td>yolo</td>
+													<td>19.99</td>
+												</tr>
+												<tr>
+													<td>Item Three</td>
+													<td> Morbi faucibus arcu accumsan lorem.</td>
+													<td>yolo</td>
+													<td>29.99</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+									<span class="image"><img src="images/trophy.png" alt="" /></span>
+								</div>
+							</section>
+
+						<!-- First Section -->
+							<section id="first" class="main special">
+								<header class="major">
+									<h2>Prochains thèmes</h2>
+								</header>
+								<ul class="features">
+									<li>
+										<span class="icon solid major style1 fa-code"></span>
+										<h3>Semaine 1</h3>
+										<p>Friends</p>
+									</li>
+									<li>
+										<span class="icon major style3 fa-copy"></span>
+										<h3>Semaine 2</h3>
+										<p>Lost</p>
+									</li>
+									<li>
+										<span class="icon major style5 fa-gem"></span>
+										<h3>Semaine 3</h3>
+										<p>Breaking Bad</p>
+									</li>
+								</ul>
+							</section>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<dl class="alt">
+								<dt>Addresse</dt>
+								<dd>
+									20 Allée de Hambourg #100 &bull; Gatineau &bull; QC &bull; J9J 4J6
+								</dd>
+							</dl>
+						</section>
+
+						<p class="copyright">&copy; Fait avec <i class="icon fa-solid fa-heart" style="color: #ffffff;"></i> par Christian Bamatembera.</p>
+					</footer>
+
+			</div>
+		</div>
+
+		<!-- Scripts -->
+			<script src="%sveltekit.assets%/assets/js/jquery.min.js"></script>
+			<script src="%sveltekit.assets%/assets/js/jquery.scrollex.min.js"></script>
+			<script src="%sveltekit.assets%/assets/js/jquery.scrolly.min.js"></script>
+			<script src="%sveltekit.assets%/assets/js/browser.min.js"></script>
+			<script src="%sveltekit.assets%/assets/js/breakpoints.min.js"></script>
+			<script src="%sveltekit.assets%/assets/js/util.js"></script>
+			<script src="%sveltekit.assets%/assets/js/main.js"></script>
 	</body>
 </html>
