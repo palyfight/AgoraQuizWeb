@@ -111,9 +111,7 @@
 										<option>Chargement....</option>
 									{:then themes}
 										{#each themes.data as theme, i}
-											{#if !UNIQUE_MONTHS.has(convertDateToMonthNameAndYear(theme.attributes.triviaDate))}
-												<span>{UNIQUE_MONTHS.add(convertDateToMonthNameAndYear(theme.attributes.triviaDate))}</span>
-											{/if}
+											<span>{UNIQUE_MONTHS.add(convertDateToMonthNameAndYear(theme.attributes.triviaDate))}</span>
 										{/each}
 										{#each Array.from(UNIQUE_MONTHS) as value}
 											<option value="{value}">{value}</option>
