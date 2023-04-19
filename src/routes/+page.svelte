@@ -1,4 +1,6 @@
 <script>
+	const API_TOKEN = "";
+	const BASE_URL = "http://localhost:1337"
 	const MONTH_NAMES_FR = [
 	  "Janvier",
 	  "Février",
@@ -13,14 +15,14 @@
 	  "Novembre",
 	  "Décembre"
 	];
-	const BASE_URL = "http://localhost:1337"
 	const API_URL = `${BASE_URL}/api`;
+	const UNIQUE_MONTHS = new Set();
 
 	let themePromise;
 	let filteredThemePromise;
 	let upcomingThemePromise;
 	let selectedMonth;
-	let rankingTable;
+	let rankingTable = "";
 
 	function convertDateToMonthNameAndYear(dateToConvert) {
 		const [year, month, day] = dateToConvert.split("-");
@@ -31,9 +33,9 @@
 
 	function isDateWithinSelectedMonth(dateStr) {
 	  	const [year, month, day] = dateStr.split("-");
-	  	const [selectYear, selectMonth] = selectedMonth.split("-");
+	  	const [selectMonth, selectYear] = selectedMonth.split(" ");
 
-	  	return month === selectMonth;
+	  	return month == MONTH_NAMES_FR.indexOf(selectMonth)+1;
 	}
 
 	// Thank you ChatGPT :)
@@ -47,27 +49,35 @@
 		return formattedDate;
 	}
 
-	const filterThemesByMonth = async (month) => {
+	const filterThemesByMonth = async () => {
 		var foo = await themePromise;
 		filteredThemePromise = foo.data.filter(obj => isDateWithinSelectedMonth(obj.attributes.triviaDate));
 	}
 	
 	const fetchAvailableThemeList = async () => {
 		var now = getCurrentDate();
-		var response = await fetch(`${API_URL}/themes?populate=*&filters[$and][0][triviaDate][$lte]=${now}`);
+		var response = await fetch(`${API_URL}/themes?populate=*&filters[$and][0][triviaDate][$lte]=${now}`, {
+			headers: {
+				'Authorization': `Bearer ${API_TOKEN}`
+			}
+		});
 		var result = await response.json();
 		return result;
 	}
 
-	const getUpcomingThemes = async () => {
+	const fetchUpcomingThemes = async () => {
 		var now = getCurrentDate();
-		var response = await fetch(`${API_URL}/themes?populate=*&pagination[limit]=3&filters[triviaDate][$gt]=${now}`);
+		var response = await fetch(`${API_URL}/themes?populate=*&pagination[limit]=3&filters[triviaDate][$gt]=${now}`, {
+			headers: {
+				'Authorization': `Bearer ${API_TOKEN}`
+			}
+		});
 		var result = await response.json();
 		return result;
 	}
 
 	themePromise = fetchAvailableThemeList();
-	upcomingThemePromise = getUpcomingThemes();
+	upcomingThemePromise = fetchUpcomingThemes();
 </script>
 
 <!-- Wrapper -->
@@ -95,13 +105,18 @@
 					<header class="major">
 						<p>
 							{#if themePromise}
-								<select bind:value={selectedMonth} on:change={(event) => filterThemesByMonth(selectedMonth)}>
+								<select bind:value={selectedMonth} on:change={(event) => filterThemesByMonth()}>
 									<option value="">- Mois -</option>
 									{#await themePromise}
-										<option>Loading....</option>
+										<option>Chargement....</option>
 									{:then themes}
 										{#each themes.data as theme, i}
-											<option value="{theme.attributes.triviaDate}">{convertDateToMonthNameAndYear(theme.attributes.triviaDate)}</option>
+											{#if !UNIQUE_MONTHS.has(convertDateToMonthNameAndYear(theme.attributes.triviaDate))}
+												<span>{UNIQUE_MONTHS.add(convertDateToMonthNameAndYear(theme.attributes.triviaDate))}</span>
+											{/if}
+										{/each}
+										{#each Array.from(UNIQUE_MONTHS) as value}
+											<option value="{value}">{value}</option>
 										{/each}
 									{:catch err}
 										<option>Oops!</option>
@@ -114,7 +129,7 @@
 								<select bind:value={rankingTable}>
 									<option value="">- Thème -</option>
 									{#await filteredThemePromise}
-										<option>Loading....</option>
+										<option>Chargement....</option>
 									{:then themes}
 										{#each themes as theme, i}
 											<option value="{theme.attributes.ranking.data.attributes.table}">{theme.attributes.name}</option>
