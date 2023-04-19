@@ -16,11 +16,10 @@
 	const BASE_URL = "http://localhost:1337"
 	const API_URL = `${BASE_URL}/api`;
 
-	let monthPromise;
 	let themePromise;
-	let upcomingPromise;
+	let filteredThemePromise;
+	let upcomingThemePromise;
 	let selectedMonth;
-	let selectedTheme;
 	let rankingTable;
 
 	function convertDateToMonthNameAndYear(dateToConvert) {
@@ -37,6 +36,7 @@
 	  	return month === selectMonth;
 	}
 
+	// Thank you ChatGPT :)
 	function getCurrentDate() {
 		const currentDate = new Date();
 		const year = currentDate.getFullYear();
@@ -47,31 +47,27 @@
 		return formattedDate;
 	}
 
-	function setRankingTable(theme) {
-		rankingTable = selectedTheme;
-	}
-
-	const getThemesByMonth = async (month) => {
-		var foo = await monthPromise;
-		themePromise = foo.data.filter(obj => isDateWithinSelectedMonth(obj.attributes.triviaDate));
+	const filterThemesByMonth = async (month) => {
+		var foo = await themePromise;
+		filteredThemePromise = foo.data.filter(obj => isDateWithinSelectedMonth(obj.attributes.triviaDate));
 	}
 	
-	const getTriviaList = async () => {
+	const fetchAvailableThemeList = async () => {
 		var now = getCurrentDate();
-		var response = await fetch(`${API_URL}/themes?populate=*&filters[$and][0][availableDate][$lte]=${now}&filters[$and][1][unavailableDate][$gte]=${now}`);
+		var response = await fetch(`${API_URL}/themes?populate=*&filters[$and][0][triviaDate][$lte]=${now}`);
 		var result = await response.json();
 		return result;
 	}
 
-	const getUpcomingTrivias = async () => {
+	const getUpcomingThemes = async () => {
 		var now = getCurrentDate();
 		var response = await fetch(`${API_URL}/themes?populate=*&pagination[limit]=3&filters[triviaDate][$gt]=${now}`);
 		var result = await response.json();
 		return result;
 	}
 
-	monthPromise = getTriviaList();
-	upcomingPromise = getUpcomingTrivias();
+	themePromise = fetchAvailableThemeList();
+	upcomingThemePromise = getUpcomingThemes();
 </script>
 
 <!-- Wrapper -->
@@ -98,15 +94,15 @@
 				<section id="intro" class="main">
 					<header class="major">
 						<p>
-							{#if monthPromise}
-								<select bind:value={selectedMonth} on:change={(event) => getThemesByMonth(selectedMonth)}>
+							{#if themePromise}
+								<select bind:value={selectedMonth} on:change={(event) => filterThemesByMonth(selectedMonth)}>
 									<option value="">- Mois -</option>
-									{#await monthPromise}
+									{#await themePromise}
 										<option>Loading....</option>
 									{:then themes}
-											{#each themes.data as theme, i}
-												<option value="{theme.attributes.triviaDate}">{convertDateToMonthNameAndYear(theme.attributes.triviaDate)}</option>
-											{/each}
+										{#each themes.data as theme, i}
+											<option value="{theme.attributes.triviaDate}">{convertDateToMonthNameAndYear(theme.attributes.triviaDate)}</option>
+										{/each}
 									{:catch err}
 										<option>Oops!</option>
 									{/await}
@@ -114,10 +110,10 @@
 							{/if}
 						</p>
 						<p>
-							{#if themePromise}
-								<select  bind:value={selectedTheme} on:change={(event) => setRankingTable(selectedTheme)}>
+							{#if filteredThemePromise}
+								<select bind:value={rankingTable}>
 									<option value="">- Thème -</option>
-									{#await themePromise}
+									{#await filteredThemePromise}
 										<option>Loading....</option>
 									{:then themes}
 										{#each themes as theme, i}
@@ -148,7 +144,7 @@
 						<h2>Prochains thèmes</h2>
 					</header>
 					<ul class="features">
-						{#await upcomingPromise}
+						{#await upcomingThemePromise}
 							<li>Chargement....</li>
 						{:then trivias}
 							{#each trivias.data as trivia}
